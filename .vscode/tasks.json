@@ -4,7 +4,7 @@
         {
             "label": "build",
             "type": "shell",
-            "command": "gcc",
+            "command": "g++",
             "args": [
                 "${workspaceFolder}/src/main.cpp",
                 "-I", "C:/raylib/include",
@@ -13,6 +13,7 @@
                 "-lopengl32",
                 "-lgdi32",
                 "-lwinmm",
+                "-std=c++17",
                 "-o", "${workspaceFolder}/collision-sim.exe"
             ],
             "problemMatcher": []
