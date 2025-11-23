@@ -26,6 +26,7 @@ int main()
         ClearBackground(BLACK);
 
         RenderBall::Draw(game);
+        RenderBall::DrawInformationTable(game);
 
         EndDrawing();
     }

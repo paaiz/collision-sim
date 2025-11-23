@@ -6,8 +6,8 @@
 // static const float GRAVITY = 600.0f; gperlu gravitasi lg
 static const float BALL_BOUNCE_REDUCTION = 1.0f;
 
-float MIN_SPEED = 50.0f;
-float MAX_SPEED = 300.0f;
+float MIN_SPEED = 150.0f;
+float MAX_SPEED = 400.0f;
 
 float RADIUS_BOLA = 20.0f;
 
