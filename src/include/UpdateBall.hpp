@@ -5,4 +5,6 @@ class UpdateBall
 {
 public:
     static void Update(GameState &state);
+    static void LogicBall(GameState &state);
+    static void CheckWallCollisions(std::vector<Ball> &balls);
 };

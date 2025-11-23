@@ -1,6 +1,6 @@
 #include "../include/UpdateBall.hpp"
-#include <raylib.h>
 
+#include <raylib.h>
 #include <cmath>
 
 static const float GRAVITY = 600.0f;
@@ -8,36 +8,70 @@ static const float BOUNCE_DAMPING = 0.6f;
 
 void UpdateBall::Update(GameState &state)
 {
-    float dt = GetFrameTime();
-
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
-        Ball b;
-        b.position = GetMousePosition();
-        b.velocity = {0, 0};
-        b.radius = 20.0f;
-        b.color = RED;
+        Ball ball;
+        ball.position = GetMousePosition();
+        ball.velocity = {0, 0};
+        ball.radius = 20.0f;
+        ball.color = RED;
 
-        state.balls.push_back(b);
+        state.balls.push_back(ball);
     }
 
-    for (auto &b : state.balls)
+    LogicBall(state);
+
+    CheckWallCollisions(state.balls);
+}
+
+void UpdateBall::LogicBall(GameState &state)
+{
+    float dt = GetFrameTime();
+
+    for (auto &ball : state.balls)
     {
-        b.velocity.y += GRAVITY * dt;
+        ball.velocity.y += GRAVITY * dt;
 
-        b.position.x += b.velocity.x * dt;
-        b.position.y += b.velocity.y * dt;
+        ball.position.x += ball.velocity.x * dt;
+        ball.position.y += ball.velocity.y * dt;
+    }
+}
 
-        float floorY = GetScreenHeight() - b.radius;
+void UpdateBall::CheckWallCollisions(std::vector<Ball> &balls)
+{
+    const float bounceFactor = BOUNCE_DAMPING;
 
-        if (b.position.y > floorY)
+    int screenW = GetScreenWidth();
+    int screenH = GetScreenHeight();
+
+    for (auto &b : balls)
+    {
+        // Dinding Kiri
+        if (b.position.x < b.radius)
         {
-            b.position.y = floorY;
+            b.position.x = b.radius;
+            b.velocity.x *= -bounceFactor;
+        }
 
-            b.velocity.y *= -BOUNCE_DAMPING;
+        // Dinding Kanan
+        if (b.position.x > screenW - b.radius)
+        {
+            b.position.x = screenW - b.radius;
+            b.velocity.x *= -bounceFactor;
+        }
 
-            if (fabs(b.velocity.y) < 10.0f)
-                b.velocity.y = 0;
+        // Atap
+        if (b.position.y < b.radius)
+        {
+            b.position.y = b.radius;
+            b.velocity.y *= -bounceFactor;
+        }
+
+        // Lantai
+        if (b.position.y > screenH - b.radius)
+        {
+            b.position.y = screenH - b.radius;
+            b.velocity.y *= -bounceFactor;
         }
     }
 }
