@@ -9,23 +9,28 @@ static const float BALL_BOUNCE_REDUCTION = 1.0f;
 float MIN_SPEED = 150.0f;
 float MAX_SPEED = 400.0f;
 
-float RADIUS_BOLA = 20.0f;
+float RADIUS_BOLA = 5.0f;
+
+float spawnTimer = 0.0f;
+float spawnDelay = 0.1f;
 
 void UpdateBall::Update(GameState &state)
 {
+    float dt = GetFrameTime();
+    spawnTimer -= dt;
 
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && spawnTimer <= 0.0f)
     {
-        float speed = GetRandomValue(MIN_SPEED, MAX_SPEED);
-        float angle = GetRandomValue(0, 360) * DEG2RAD;
+        spawnBall(state, GetMousePosition());
+        spawnTimer = spawnDelay;
+    }
 
-        Ball ball;
-        ball.position = GetMousePosition();
-        ball.velocity = {cosf(angle) * speed, sinf(angle) * speed};
-        ball.radius = RADIUS_BOLA;
-        ball.color = ColorFromHSV(GetRandomValue(0, 360), 0.75f, 0.95f);
+    if (IsMouseButtonDown(MOUSE_RIGHT_BUTTON) && spawnTimer <= 0.0f)
+    {
+        for (int i = 0; i < 3; i++)
+            spawnBall(state, GetMousePosition());
 
-        state.balls.push_back(ball);
+        spawnTimer = spawnDelay * 0.3f;
     }
 
     LogicBall(state);
@@ -33,6 +38,20 @@ void UpdateBall::Update(GameState &state)
     bruteForceCollision(state.balls);
 
     CheckWallCollisions(state.balls);
+}
+
+void UpdateBall::spawnBall(GameState &state, Vector2 position)
+{
+    float speed = GetRandomValue(MIN_SPEED, MAX_SPEED);
+    float angle = GetRandomValue(0, 360) * DEG2RAD;
+
+    Ball ball;
+    ball.position = position;
+    ball.velocity = {cosf(angle) * speed, sinf(angle) * speed};
+    ball.radius = RADIUS_BOLA;
+    ball.color = ColorFromHSV(GetRandomValue(0, 360), 0.75f, 0.95f);
+
+    state.balls.push_back(ball);
 }
 
 void UpdateBall::LogicBall(GameState &state)
