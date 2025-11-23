@@ -3,18 +3,25 @@
 #include <raylib.h>
 #include <cmath>
 
-static const float GRAVITY = 600.0f;
-static const float BOUNCE_DAMPING = 0.6f;
+// static const float GRAVITY = 600.0f; gperlu gravitasi lg
+static const float BALL_BOUNCE_REDUCTION = 1.0f;
+
+float MIN_SPEED = 50.0f;
+float MAX_SPEED = 300.0f;
 
 void UpdateBall::Update(GameState &state)
 {
+
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
+        float speed = GetRandomValue(MIN_SPEED, MAX_SPEED);
+        float angle = GetRandomValue(0, 360) * DEG2RAD;
+
         Ball ball;
         ball.position = GetMousePosition();
-        ball.velocity = {0, 0};
-        ball.radius = 20.0f;
-        ball.color = RED;
+        ball.velocity = {cosf(angle) * speed, sinf(angle) * speed};
+        ball.radius = 5.0f;
+        ball.color = ColorFromHSV(GetRandomValue(0, 360), 0.75f, 0.95f);
 
         state.balls.push_back(ball);
     }
@@ -30,7 +37,7 @@ void UpdateBall::LogicBall(GameState &state)
 
     for (auto &ball : state.balls)
     {
-        ball.velocity.y += GRAVITY * dt;
+        // ball.velocity.y += GRAVITY * dt;
 
         ball.position.x += ball.velocity.x * dt;
         ball.position.y += ball.velocity.y * dt;
@@ -39,7 +46,7 @@ void UpdateBall::LogicBall(GameState &state)
 
 void UpdateBall::CheckWallCollisions(std::vector<Ball> &balls)
 {
-    const float bounceFactor = BOUNCE_DAMPING;
+    const float bounceFactor = BALL_BOUNCE_REDUCTION;
 
     int screenW = GetScreenWidth();
     int screenH = GetScreenHeight();
