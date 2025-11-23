@@ -3,7 +3,7 @@
 
 #include <cmath>
 
-static const float GRAVITY = 0.0f;
+static const float GRAVITY = 600.0f;
 static const float BOUNCE_DAMPING = 0.6f;
 
 void UpdateBall::Update(GameState &state)
