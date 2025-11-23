@@ -1,15 +1,36 @@
+#include <iostream>
 #include "raylib.h"
 
-int main(void)
+#include "./include/GameState.hpp"
+#include "./include/UpdateBall.hpp"
+#include "./include/RenderBall.hpp"
+
+using namespace std;
+
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
+
+int main()
 {
-    InitWindow(800, 450, "raylib");
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Collision Simulation Physics made by Paiz with ♥");
+
+    SetTargetFPS(60);
+
+    GameState game;
+
     while (!WindowShouldClose())
     {
+        UpdateBall::Update(game);
+
         BeginDrawing();
-        ClearBackground(RAYWHITE);
-        DrawText("Hello, Pak Hendra! Ihiyyyy", 200, 200, 20, BLACK);
+        ClearBackground(BLACK);
+
+        RenderBall::Draw(game);
+
         EndDrawing();
     }
+
     CloseWindow();
+
     return 0;
 }
