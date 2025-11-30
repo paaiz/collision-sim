@@ -124,6 +124,42 @@ void UpdateBall::LogicBall(GameState &state)
     }
 }
 
+void UpdateBall::resolveCollision(Ball &bola1, Ball &bola2)
+{
+    float jarakMinimumBola = bola1.radius + bola2.radius;
+
+    float jarakXBola1dan2 = bola2.position.x - bola1.position.x;
+    float jarakYBola1dan2 = bola2.position.y - bola1.position.y;
+
+    float jarakKuadrat = jarakXBola1dan2 * jarakXBola1dan2 + jarakYBola1dan2 * jarakYBola1dan2;
+    float jarak = sqrtf(jarakKuadrat);
+
+    // Apakah bola nabrak?!?!?!?!? ril or fake
+    if (jarak < jarakMinimumBola && jarak > 0.0f)
+    {
+        float unitVektorX = jarakXBola1dan2 / jarak;
+        float unitVektorY = jarakYBola1dan2 / jarak;
+
+        float skalarHasil = (bola1.velocity.x - bola2.velocity.x) * unitVektorX + (bola1.velocity.y - bola2.velocity.y) * unitVektorY;
+
+        bola1.velocity.x -= skalarHasil * unitVektorX;
+        bola1.velocity.y -= skalarHasil * unitVektorY;
+
+        bola2.velocity.x += skalarHasil * unitVektorX;
+        bola2.velocity.y += skalarHasil * unitVektorY;
+
+        // Overlap issue
+        float overlap = jarakMinimumBola - jarak;
+        float geserBola = overlap * 0.8f;
+
+        bola1.position.x -= unitVektorX * geserBola;
+        bola1.position.y -= unitVektorY * geserBola;
+
+        bola2.position.x += unitVektorX * geserBola;
+        bola2.position.y += unitVektorY * geserBola;
+    }
+}
+
 void UpdateBall::bruteForceCollision(std::vector<Ball> &balls)
 {
     size_t bola = balls.size();
@@ -132,41 +168,7 @@ void UpdateBall::bruteForceCollision(std::vector<Ball> &balls)
     {
         for (size_t j = i + 1; j < bola; j++)
         {
-            Ball &bola1 = balls[i];
-            Ball &bola2 = balls[j];
-
-            float jarakMinimumBola = bola1.radius + bola2.radius;
-
-            float jarakXBola1dan2 = bola2.position.x - bola1.position.x;
-            float jarakYBola1dan2 = bola2.position.y - bola1.position.y;
-
-            float jarakKuadrat = jarakXBola1dan2 * jarakXBola1dan2 + jarakYBola1dan2 * jarakYBola1dan2;
-            float jarak = sqrtf(jarakKuadrat);
-
-            // Apakah bola nabrak?!?!?!?!? ril or fake
-            if (jarak < jarakMinimumBola && jarak > 0.0f)
-            {
-                float unitVektorX = jarakXBola1dan2 / jarak;
-                float unitVektorY = jarakYBola1dan2 / jarak;
-
-                float skalarHasil = (bola1.velocity.x - bola2.velocity.x) * unitVektorX + (bola1.velocity.y - bola2.velocity.y) * unitVektorY;
-
-                bola1.velocity.x -= skalarHasil * unitVektorX;
-                bola1.velocity.y -= skalarHasil * unitVektorY;
-
-                bola2.velocity.x += skalarHasil * unitVektorX;
-                bola2.velocity.y += skalarHasil * unitVektorY;
-
-                // Overlap issue
-                float overlap = jarakMinimumBola - jarak;
-                float geserBola = overlap * 0.8f;
-
-                bola1.position.x -= unitVektorX * geserBola;
-                bola1.position.y -= unitVektorY * geserBola;
-
-                bola2.position.x += unitVektorX * geserBola;
-                bola2.position.y += unitVektorY * geserBola;
-            }
+            resolveCollision(balls[i], balls[j]);
         }
     }
 }
@@ -210,28 +212,7 @@ void UpdateBall::quadtreeCollision(std::vector<Ball> &balls)
 
             if (jarak < jarakMinimumBola * jarakMinimumBola && jarak > 0.0f)
             {
-                float hasilJarak = sqrtf(jarak);
-                float ux = dx / hasilJarak;
-                float uy = dy / hasilJarak;
-
-                float skalarHasil =
-                    (bola1.velocity.x - bola2->velocity.x) * ux +
-                    (bola1.velocity.y - bola2->velocity.y) * uy;
-
-                bola1.velocity.x -= skalarHasil * ux;
-                bola1.velocity.y -= skalarHasil * uy;
-
-                bola2->velocity.x += skalarHasil * ux;
-                bola2->velocity.y += skalarHasil * uy;
-
-                float overlap = jarakMinimumBola - hasilJarak;
-                float geser = overlap * 0.5f;
-
-                bola1.position.x -= ux * geser;
-                bola1.position.y -= uy * geser;
-
-                bola2->position.x += ux * geser;
-                bola2->position.y += uy * geser;
+                resolveCollision(bola1, *bola2);
             }
         }
     }

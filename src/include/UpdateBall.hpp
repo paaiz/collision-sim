@@ -11,4 +11,5 @@ public:
     static void CheckWallCollisions(std::vector<Ball> &balls);
     static void bruteForceCollision(std::vector<Ball> &balls);
     static void quadtreeCollision(std::vector<Ball> &balls);
+    static void resolveCollision(Ball &bola1, Ball &bola2);
 };
