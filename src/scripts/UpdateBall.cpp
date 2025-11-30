@@ -14,6 +14,9 @@ float RADIUS_BOLA = 5.0f;
 float spawnTimer = 0.0f;
 float spawnDelay = 0.1f;
 
+bool SHOW_QTREE_GRID = true;
+bool TOGGLE_QTREE = false;
+
 void UpdateBall::Update(GameState &state)
 {
     int SCREEN_HEIGHT = GetScreenHeight();
@@ -23,12 +26,21 @@ void UpdateBall::Update(GameState &state)
     spawnTimer -= dt;
 
     const char *resetText = "Press 'R' to reset balls";
-    int textWidth = MeasureText(resetText, 20);
+    int resetTextWidth = MeasureText(resetText, 20);
 
-    DrawText(resetText, (SCREEN_WIDTH - textWidth) - 10, 10, 20, WHITE);
+    DrawText(resetText, (SCREEN_WIDTH - resetTextWidth) - 10, 10, 20, WHITE);
     if (IsKeyPressed(KEY_R))
     {
         state.balls.clear();
+    }
+
+    const char *showQtreeGridText = "Press 'G' to toggle QTree grid";
+    int showQtreeGridTextWidth = MeasureText(showQtreeGridText, 20);
+
+    DrawText(showQtreeGridText, (SCREEN_WIDTH - showQtreeGridTextWidth) - 10, 40, 20, WHITE);
+    if (IsKeyPressed(KEY_G))
+    {
+        SHOW_QTREE_GRID = !SHOW_QTREE_GRID;
     }
 
     if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && spawnTimer <= 0.0f)
@@ -48,17 +60,39 @@ void UpdateBall::Update(GameState &state)
 
     LogicBall(state);
 
-    // Implement Qtree or Brute Force ketika bola banyak sekali
-    const int BALL_LIMIT = 500;
-    if (state.balls.size() < BALL_LIMIT)
+    // Implement Qtree or Brute Force ketika bola banyak sekali-li-li-li
+    const int BALL_LIMIT = 500; // ini udah ga kepake. karena udah ada toggle manual. Lebih jelas perbandingannya wakowkaowakowa
+
+    const char *toggleQtreeText = "Press 'B' to switch collision algorithm";
+    int toggleQtreeTextWidth = MeasureText(toggleQtreeText, 20);
+
+    DrawText(toggleQtreeText, (SCREEN_WIDTH - toggleQtreeTextWidth) - 10, 70, 20, WHITE);
+    if (IsKeyPressed(KEY_B))
+    {
+        TOGGLE_QTREE = !TOGGLE_QTREE;
+    }
+
+    if (!TOGGLE_QTREE)
     {
         DrawText("Using Brute Force Algorithm!", 10, 70, 20, RED);
         bruteForceCollision(state.balls);
     }
     else
     {
-        DrawText(TextFormat("Ball exceeded limit (%d). Quadtree enabled!", BALL_LIMIT), 10, 70, 20, GREEN);
+        DrawText("Using Quadtree Algorithm!", 10, 70, 20, GREEN);
+        quadtreeCollision(state.balls);
     }
+
+    // if (state.balls.size() < BALL_LIMIT)
+    // {
+    //     DrawText("Using Brute Force Algorithm!", 10, 70, 20, RED);
+    //     bruteForceCollision(state.balls);
+    // }
+    // else
+    // {
+    //     DrawText(TextFormat("Ball exceeded limit (%d). Quadtree enabled!", BALL_LIMIT), 10, 70, 20, GREEN);
+    //     quadtreeCollision(state.balls);
+    // }
 
     CheckWallCollisions(state.balls);
 }
@@ -132,6 +166,72 @@ void UpdateBall::bruteForceCollision(std::vector<Ball> &balls)
 
                 bola2.position.x += unitVektorX * geserBola;
                 bola2.position.y += unitVektorY * geserBola;
+            }
+        }
+    }
+}
+
+void UpdateBall::quadtreeCollision(std::vector<Ball> &balls)
+{
+    Rectangle boundary = {0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()};
+    QNode qtree(boundary, 6);
+
+    for (auto &b : balls)
+        qtree.insert(&b);
+
+    if (SHOW_QTREE_GRID)
+        qtree.draw();
+
+    // Sama, cek collision.
+    for (size_t i = 0; i < balls.size(); i++)
+    {
+        Ball &bola1 = balls[i];
+
+        Rectangle range = {
+            bola1.position.x - bola1.radius * 2,
+            bola1.position.y - bola1.radius * 2,
+            bola1.radius * 4,
+            bola1.radius * 4};
+
+        std::vector<Ball *> candidates;
+        qtree.query(range, candidates);
+
+        for (Ball *bola2 : candidates)
+        {
+            if (&bola1 == bola2)
+                continue;
+
+            float jarakMinimumBola = bola1.radius + bola2->radius;
+
+            float dx = bola2->position.x - bola1.position.x;
+            float dy = bola2->position.y - bola1.position.y;
+
+            float jarak = dx * dx + dy * dy;
+
+            if (jarak < jarakMinimumBola * jarakMinimumBola && jarak > 0.0f)
+            {
+                float hasilJarak = sqrtf(jarak);
+                float ux = dx / hasilJarak;
+                float uy = dy / hasilJarak;
+
+                float skalarHasil =
+                    (bola1.velocity.x - bola2->velocity.x) * ux +
+                    (bola1.velocity.y - bola2->velocity.y) * uy;
+
+                bola1.velocity.x -= skalarHasil * ux;
+                bola1.velocity.y -= skalarHasil * uy;
+
+                bola2->velocity.x += skalarHasil * ux;
+                bola2->velocity.y += skalarHasil * uy;
+
+                float overlap = jarakMinimumBola - hasilJarak;
+                float geser = overlap * 0.5f;
+
+                bola1.position.x -= ux * geser;
+                bola1.position.y -= uy * geser;
+
+                bola2->position.x += ux * geser;
+                bola2->position.y += uy * geser;
             }
         }
     }
