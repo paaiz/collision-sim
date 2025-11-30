@@ -35,7 +35,17 @@ void UpdateBall::Update(GameState &state)
 
     LogicBall(state);
 
-    bruteForceCollision(state.balls);
+    // Implement Qtree or Brute Force ketika bola banyak sekali
+    const int BALL_LIMIT = 500;
+    if (state.balls.size() < BALL_LIMIT)
+    {
+        DrawText("Using Brute Force Algorithm!", 10, 70, 20, RED);
+        bruteForceCollision(state.balls);
+    }
+    else
+    {
+        DrawText(TextFormat("Ball exceeded limit (%d). Quadtree enabled!", BALL_LIMIT), 10, 70, 20, GREEN);
+    }
 
     CheckWallCollisions(state.balls);
 }
