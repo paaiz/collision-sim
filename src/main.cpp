@@ -27,6 +27,7 @@ int main()
 
         RenderBall::Draw(game);
         RenderBall::DrawInformationTable(game);
+        RenderBall::DrawIfQtree(game);
 
         EndDrawing();
     }
