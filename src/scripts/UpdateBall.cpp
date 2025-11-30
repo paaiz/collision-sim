@@ -28,9 +28,10 @@ void UpdateBall::Update(GameState &state)
     if (IsMouseButtonDown(MOUSE_RIGHT_BUTTON) && spawnTimer <= 0.0f)
     {
         for (int i = 0; i < 3; i++)
+        {
             spawnBall(state, GetMousePosition());
-
-        spawnTimer = spawnDelay * 0.3f;
+            spawnTimer = spawnDelay * 0.3f;
+        }
     }
 
     LogicBall(state);
@@ -109,6 +110,16 @@ void UpdateBall::bruteForceCollision(std::vector<Ball> &balls)
 
                 bola2.velocity.x += skalarHasil * unitVektorX;
                 bola2.velocity.y += skalarHasil * unitVektorY;
+
+                // Overlap issue
+                float overlap = jarakMinimumBola - jarak;
+                float geserBola = overlap * 0.8f;
+
+                bola1.position.x -= unitVektorX * geserBola;
+                bola1.position.y -= unitVektorY * geserBola;
+
+                bola2.position.x += unitVektorX * geserBola;
+                bola2.position.y += unitVektorY * geserBola;
             }
         }
     }
