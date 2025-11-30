@@ -11,6 +11,7 @@
 
 ## Installation
 
+- Collision simulator ini membutuhkan Raylib. Kamu bisa cek Raylib [disini](https://www.raylib.com/)
 - Buka CMD dan tulis ".\build.bat" atau buka file build.bat
 - Terminal akan menunjukkan bahwa instalasi berhasil atau tidak.
 - Jika berhasil, tulis ".\bin\collision-sim.exe" pada CMD.
