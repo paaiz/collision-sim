@@ -8,3 +8,10 @@
 - Hold kanan pada mouse akan mengeluarkan 3 bola sekaligus.
 - FPS Counter
 - Counter Bola
+
+## Installation
+
+- Buka CMD dan tulis ".\build.bat" atau buka file build.bat
+- Terminal akan menunjukkan bahwa instalasi berhasil atau tidak.
+- Jika berhasil, tulis ".\bin\collision-sim.exe" pada CMD.
+- Aplikasi akan terbuka. Enjoy 😊
