@@ -16,8 +16,20 @@ float spawnDelay = 0.1f;
 
 void UpdateBall::Update(GameState &state)
 {
+    int SCREEN_HEIGHT = GetScreenHeight();
+    int SCREEN_WIDTH = GetScreenWidth();
+
     float dt = GetFrameTime();
     spawnTimer -= dt;
+
+    const char *resetText = "Press 'R' to reset balls";
+    int textWidth = MeasureText(resetText, 20);
+
+    DrawText(resetText, (SCREEN_WIDTH - textWidth) - 10, 10, 20, WHITE);
+    if (IsKeyPressed(KEY_R))
+    {
+        state.balls.clear();
+    }
 
     if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && spawnTimer <= 0.0f)
     {
