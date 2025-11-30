@@ -202,18 +202,7 @@ void UpdateBall::quadtreeCollision(std::vector<Ball> &balls)
         {
             if (&bola1 == bola2)
                 continue;
-
-            float jarakMinimumBola = bola1.radius + bola2->radius;
-
-            float dx = bola2->position.x - bola1.position.x;
-            float dy = bola2->position.y - bola1.position.y;
-
-            float jarak = dx * dx + dy * dy;
-
-            if (jarak < jarakMinimumBola * jarakMinimumBola && jarak > 0.0f)
-            {
-                resolveCollision(bola1, *bola2);
-            }
+            resolveCollision(bola1, *bola2);
         }
     }
 }
