@@ -23,10 +23,9 @@
 - Hold kanan pada mouse akan mengeluarkan 3 bola sekaligus.
 - FPS Counter
 - Counter Bola
-- Toggle untuk mengganti 2 algoritma (Brute Force atau QTree)
 - Toggle 'R' untuk reset bola
 - Toggle 'G' untuk show/hide QTree Grid
-- Toggle 'B' untuk mengganti 2 algoritma collision
+- Toggle 'B' untuk mengganti 2 algoritma collision (Brute Force atau QTree)
 
 ## Demonstration
 
