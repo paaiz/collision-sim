@@ -24,6 +24,99 @@
 
 <img src="assets/demo_strukdat.gif" alt="VIDEO_DEMONSTRATION"/>
 
+## Code Snippets
+
+Kedua snippet dibawah dapat diakses pada folder `src/scripts/UpdateBall.cpp` <br>
+Kode dibawah adalah dimana algoritma Brute Force berfungsi.
+
+```cpp
+void UpdateBall::resolveCollision(Ball &bola1, Ball &bola2)
+{
+    float jarakMinimumBola = bola1.radius + bola2.radius;
+
+    float jarakXBola1dan2 = bola2.position.x - bola1.position.x;
+    float jarakYBola1dan2 = bola2.position.y - bola1.position.y;
+
+    float jarakKuadrat = jarakXBola1dan2 * jarakXBola1dan2 + jarakYBola1dan2 * jarakYBola1dan2;
+    float jarak = sqrtf(jarakKuadrat);
+
+    if (jarak < jarakMinimumBola && jarak > 0.0f)
+    {
+        float unitVektorX = jarakXBola1dan2 / jarak;
+        float unitVektorY = jarakYBola1dan2 / jarak;
+
+        float skalarHasil = (bola1.velocity.x - bola2.velocity.x) * unitVektorX + (bola1.velocity.y - bola2.velocity.y) * unitVektorY;
+
+        bola1.velocity.x -= skalarHasil * unitVektorX;
+        bola1.velocity.y -= skalarHasil * unitVektorY;
+
+        bola2.velocity.x += skalarHasil * unitVektorX;
+        bola2.velocity.y += skalarHasil * unitVektorY;
+
+        // Overlap issue
+        float overlap = jarakMinimumBola - jarak;
+        float geserBola = overlap * 0.8f;
+
+        bola1.position.x -= unitVektorX * geserBola;
+        bola1.position.y -= unitVektorY * geserBola;
+
+        bola2.position.x += unitVektorX * geserBola;
+        bola2.position.y += unitVektorY * geserBola;
+    }
+}
+
+void UpdateBall::bruteForceCollision(std::vector<Ball> &balls)
+{
+    size_t bola = balls.size();
+
+    for (size_t i = 0; i < bola; i++)
+    {
+        for (size_t j = i + 1; j < bola; j++)
+        {
+            resolveCollision(balls[i], balls[j]);
+        }
+    }
+}
+```
+
+Kode dibawah adalah pengaplikasian dari metode algoritma Quad Tree. Lebih detail bisa dilihat pada `src/include/QuadTree.hpp`.
+
+```cpp
+void UpdateBall::quadtreeCollision(std::vector<Ball> &balls)
+{
+    Rectangle boundary = {0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()};
+    QNode qtree(boundary, 6);
+
+    for (auto &b : balls)
+        qtree.insert(&b);
+
+    if (SHOW_QTREE_GRID)
+        qtree.draw();
+
+    // Sama, cek collision.
+    for (size_t i = 0; i < balls.size(); i++)
+    {
+        Ball &bola1 = balls[i];
+
+        Rectangle range = {
+            bola1.position.x - bola1.radius * 2,
+            bola1.position.y - bola1.radius * 2,
+            bola1.radius * 4,
+            bola1.radius * 4};
+
+        std::vector<Ball *> candidates;
+        qtree.query(range, candidates);
+
+        for (Ball *bola2 : candidates)
+        {
+            if (&bola1 == bola2)
+                continue;
+            resolveCollision(bola1, *bola2);
+        }
+    }
+}
+```
+
 ## Installation
 
 - Collision simulator ini membutuhkan Raylib. Kamu bisa cek Raylib [disini](https://www.raylib.com/)
