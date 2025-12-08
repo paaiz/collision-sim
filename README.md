@@ -3,6 +3,7 @@
 <center>Project collision simulator ini dibuat untuk Final Project dari mata kuliah Struktur Data dan Analisis Algoritma. Dosen pengampu yaitu Bapak Arta Kusuma Hernanda. Collision simulator ini menggunakan basic Brute Force algorithm sebagai salah satu landasan untuk logika collision. Tak hanya itu, Raylib menjadi sebuah framework utama untuk membuat object dari bola, window size, dan text yang informatif.</center>
 
 ## Pengertian Algoritma
+
 <p>Pada collision simulator ini, digunakannya 2 algoritma untuk menentukan collision. Yaitu menggunakan <b>Brute Force</b> dan <b>Quad Tree</b>.</p>
 
 - Brute Force: Setiap objek lingkaran akan dilakukan pengecekan apakah bola ke-1 dan bola ke-2 melakukan collision. Ketika bola atau objek yang akan dilakukan logic collision mencapai >2000, performa yang akan dihasilkan akan turun drastis dan menyebabkan _lagging_ atau _frame drop_.
@@ -18,6 +19,10 @@
 - Toggle 'R' untuk reset bola
 - Toggle 'G' untuk show/hide QTree Grid
 - Toggle 'B' untuk mengganti 2 algoritma collision
+
+## Demonstration
+
+<img src="assets/demo_strukdat.gif"/>
 
 ## Installation
 
