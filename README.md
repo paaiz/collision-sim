@@ -1,6 +1,6 @@
 <h1 align="center">Collision Simulator</h1>
 
-<center>Project collision simulator ini dibuat untuk Final Project dari mata kuliah Struktur Data dan Analisis Algoritma. Dosen pengampu yaitu Bapak Arta Kusuma Hernanda. Collision simulator ini menggunakan basic Brute Force algorithm sebagai salah satu landasan untuk logika collision. Tak hanya itu, Raylib menjadi sebuah framework utama untuk membuat object dari bola, window size, dan text yang informatif.</center>
+<center>Project collision simulator ini dibuat untuk Final Project dari mata kuliah Struktur Data dan Analisis Algoritma. Dosen pengampu yaitu Bapak Arta Kusuma Hernanda. Collision simulator ini menggunakan basic Brute Force algorithm sebagai salah satu landasan untuk logika collision, dan menggunakan algoritma Quad Tree sebagai perbandingan performa. Tak hanya itu, Raylib menjadi sebuah framework utama untuk membuat object dari bola, window size, dan text yang informatif.</center>
 
 ## Daftar Isi
 
