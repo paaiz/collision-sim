@@ -22,7 +22,7 @@
 
 ## Demonstration
 
-<img src="assets/demo_strukdat.gif"/>
+<img src="assets/demo_strukdat.gif" alt="VIDEO_DEMONSTRATION"/>
 
 ## Installation
 
